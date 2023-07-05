@@ -8,6 +8,5 @@
 
  COPY . .
 
- RUN npm run start
+ ENTRYPOINT ["npm", "run", "start"]
 
- 
