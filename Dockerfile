@@ -9,4 +9,3 @@
  COPY . .
 
  ENTRYPOINT ["npm", "run", "start"]
-

@@ -2,6 +2,8 @@ import Game from "../mongodb/models/game.js";
 import * as dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
+import * as fs from "fs";
+import * as path from "path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -32,27 +34,24 @@ const createGame = async (req, res) => {
         console.log("CLDNRY ERROR:",err)
         res.status(500).json({ msg: err.message });
       } else {
-        // console.log(req.body)
-        // console.log(req.files)
-        console.log(req)
         const {
-          adult,
+          // adult,
           backdrop_path,
-          director,
-          genre,
+          // director,
+          // genre,
           homepage,
-          overview,
-          popularity,
+          // overview,
+          // popularity,
           poster_path,
-          release_date,
-          runtime,
-          status,
-          tagline,
+          // release_date,
+          // runtime,
+          // status,
+          // tagline,
           title,
-          video,
-          vote_average,
-          vote_count,
-          writer,
+          // video,
+          // vote_average,
+          // vote_count,
+          // writer,
         } = req.body;
         const photoUrls = await Promise.all([
           cloudinary.uploader.upload(req.files.backdrop_path[0].path),
@@ -60,23 +59,23 @@ const createGame = async (req, res) => {
         ]);
 
         const newGame = new Game({
-          adult,
+          // adult,
           backdrop_path: photoUrls[0].url,
-          director,
-          genre,
+          // director,
+          // genre,
           homepage,
-          overview,
-          popularity,
+          // overview,
+          // popularity,
           poster_path: photoUrls[1].url,
-          release_date,
-          runtime,
-          status,
-          tagline,
+          // release_date,
+          // runtime,
+          // status,
+          // tagline,
           title,
-          video,
-          vote_average,
-          vote_count,
-          writer,
+          // video,
+          // vote_average,
+          // vote_count,
+          // writer,
         });
 
         await newGame.save();
@@ -154,5 +153,27 @@ const deleteGame = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Controller for fetching a specific game's HTML, CSS, and JS files
+// const fetchGame = (req, res) => {
+//   try {
+//     const gameId = req.params.id;
+//     const currentDir = new URL('.', import.meta.url).pathname;
+//     const gamesDir = path.join(currentDir, "../games");
+//     const gameFolderPath = path.join(gamesDir, gameId);
+//     const indexPath = path.join(gameFolderPath, "index.html");
+//     console.log("PATH:",indexPath)
+//     fs.readFile(indexPath, "utf8", (err, data) => {
+//       if (err) {
+//         res.status(404).json({ message: "Game not found", error:err });
+//       } else {
+//         res.setHeader("Content-Type", "text/html");
+//         res.end(data);
+//       }
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 export { createGame, getAllGames, getGameById, updateGame, deleteGame };

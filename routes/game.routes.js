@@ -3,6 +3,7 @@ import {
   createGame,
   getAllGames,
   getGameById,
+  // fetchGame,
   updateGame,
   deleteGame,
 } from "../controllers/game.controller.js";
@@ -17,6 +18,7 @@ router.get("/", getAllGames);
 
 // Get a specific game by ID
 router.get("/:id", getGameById);
+// router.get("/:id", fetchGame);
 
 // Update a game
 router.put("/:id", updateGame);
