@@ -1,23 +1,23 @@
 import mongoose from "mongoose";
 
-const gameSchema = new mongoose.Schema({
-  adult: Boolean,
-  backdrop_path: String,
-  director: String,
-  genre: String,
-  homepage: String,
-  overview: String,
-  popularity: Number,
-  poster_path: String,
-  release_date: String,
-  runtime: Number,
-  status: String,
+const gameSchema = new mongoose.Schema({  
   tagline: String,
   title: String,
-  video: String,
-  vote_average: Number,
-  vote_count: Number,
-  writer: String
+  homepage: String,
+  overview: String,
+  backdrop_path: String,
+  poster_path: String,
+  // adult: String,
+  // director: String,
+  // genre: String,
+  // popularity: Number,  
+  // release_date: String,
+  // runtime: String,
+  // status: String,
+  // video: String,
+  // vote_average: Number,
+  // vote_count: Number,
+  // writer: String
 });
 
 const Game = mongoose.model('Game', gameSchema);

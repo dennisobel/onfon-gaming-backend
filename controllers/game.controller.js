@@ -7,10 +7,10 @@ import * as path from "path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); 
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname); 
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
@@ -29,64 +29,36 @@ cloudinary.config({
 
 const createGame = async (req, res) => {
   try {
-    upload.fields([{ name: "poster_path" }, { name: "backdrop_path" }])(req, res, async (err) => {
-      if (err) {
-        console.log("CLDNRY ERROR:",err)
-        res.status(500).json({ msg: err.message });
-      } else {
-        const {
-          // adult,
-          backdrop_path,
-          // director,
-          // genre,
-          homepage,
-          // overview,
-          // popularity,
-          poster_path,
-          // release_date,
-          // runtime,
-          // status,
-          // tagline,
-          title,
-          // video,
-          // vote_average,
-          // vote_count,
-          // writer,
-        } = req.body;
-        const photoUrls = await Promise.all([
-          cloudinary.uploader.upload(req.files.backdrop_path[0].path),
-          cloudinary.uploader.upload(req.files.poster_path[0].path),
-        ]);
+    upload.fields([{ name: "poster_path" }, { name: "backdrop_path" }])(
+      req,
+      res,
+      async (err) => {
+        if (err) {
+          res.status(500).json({ msg: err.message });
+        } else {
+          const { backdrop_path, homepage, poster_path, title, tagline, overview } = req.body;
 
-        const newGame = new Game({
-          // adult,
-          backdrop_path: photoUrls[0].url,
-          // director,
-          // genre,
-          homepage,
-          // overview,
-          // popularity,
-          poster_path: photoUrls[1].url,
-          // release_date,
-          // runtime,
-          // status,
-          // tagline,
-          title,
-          // video,
-          // vote_average,
-          // vote_count,
-          // writer,
-        });
+          const photoUrls = await Promise.all([
+            cloudinary.uploader.upload(req.files.backdrop_path[0].path),
+            cloudinary.uploader.upload(req.files.poster_path[0].path),
+          ]);
 
-        await newGame.save();
+          const newGame = new Game({
+            backdrop_path: photoUrls[0].url,
+            homepage,
+            poster_path: photoUrls[1].url,
+            title,
+          });
 
-        res
-          .status(200)
-          .json({ message: "Game created successfully", data: newGame });
+          await newGame.save();
+
+          res
+            .status(200)
+            .json({ message: "Game created successfully", data: newGame });
+        }
       }
-    });
+    );
   } catch (error) {
-    console.log("error",error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -119,6 +91,10 @@ const getGameById = async (req, res) => {
 
 // Controller for updating a game
 const updateGame = async (req, res) => {
+  console.log("INSIDE UPDATE");
+  console.log(req.params);
+  console.log(req.body);
+  /*
   try {
     const gameId = req.params.id;
     const gameData = req.body;
@@ -132,6 +108,59 @@ const updateGame = async (req, res) => {
     } else {
       res.status(404).json({ message: "Game not found" });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+  */
+  try {
+    upload.fields([{ name: "poster_path" }, { name: "backdrop_path" }])(
+      req,
+      res,
+      async (err) => {
+        if (err) {
+          res.status(500).json({ msg: err.message });
+        } else {
+          const gameId = req.params.id;
+          const gameData = req.body;
+
+          // const photoUrls = await Promise.all([
+          //   cloudinary.uploader.upload(req?.files?.backdrop_path[0]?.path),
+          //   cloudinary.uploader.upload(req?.files?.poster_path[0]?.path),
+          // ]);
+
+          // Check if the backdrop_path and poster_path files exist in req.files
+          let backdropUrl, posterUrl;
+          if (req?.files?.backdrop_path && req?.files?.backdrop_path[0]?.path) {
+            backdropUrl = await cloudinary.uploader.upload(
+              req.files.backdrop_path[0].path
+            );
+          }
+          if (req?.files?.poster_path && req?.files?.poster_path[0]?.path) {
+            posterUrl = await cloudinary.uploader.upload(
+              req.files.poster_path[0].path
+            );
+          }
+
+          // If the images were not selected, use the existing URLs from the request body
+          const updatedGameFields = {
+            ...gameData,
+            backdrop_path: backdropUrl?.url || gameData.backdrop_path,
+            poster_path: posterUrl?.url || gameData.poster_path,
+          };
+
+
+          const updatedGame = await Game.findByIdAndUpdate(gameId, updatedGameFields, {
+            new: true,
+          });
+
+          if (updatedGame) {
+            res.status(200).json(updatedGame);
+          } else {
+            res.status(404).json({ message: "Game not found" });
+          }
+        }
+      }
+    );
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
