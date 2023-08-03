@@ -29,9 +29,15 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({
-  origin:"*"
-}));
+// app.use(cors({
+//   origin:"*"
+// }));
+
+const corsOptions = {
+  origin: 'https://epicgames.co.ke',
+};
+
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.send({ message: "Hello World!" });
