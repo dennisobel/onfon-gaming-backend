@@ -8,6 +8,7 @@ import morgan from "morgan";
 import connectDB from "./mongodb/connect.js";
 import userRouter from "./routes/user.routes.js";
 import gameRouter from "./routes/game.routes.js";
+import SE from "./routes/soap.routes.js";
 
 import * as fs from "fs";
 import { fileURLToPath } from "url";
@@ -35,6 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const corsOptions = {
   origin: 'https://epicgames.co.ke',
+  // origin: 'http://localhost:5173',
 };
 
 app.use(cors(corsOptions));
@@ -45,6 +47,7 @@ app.get("/", (req, res) => {
 
 app.use("/users", userRouter);
 app.use("/games", gameRouter);
+app.use("/game_play",SE)
 
 // Catch-all route for serving individual projects
 // let projectName
