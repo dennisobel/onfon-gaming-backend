@@ -35,7 +35,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // }));
 
 const corsOptions = {
-  origin: 'https://epicgames.co.ke',
+  origin: '*',
+  // origin: 'https://epicgames.co.ke',
   // origin: 'http://localhost:5173',
 };
 
