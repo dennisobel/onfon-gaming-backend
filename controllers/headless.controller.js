@@ -6,7 +6,7 @@ axiosRetry(axios, { retries: 3 }); // retry failed requests 3 times
 
 export const headless = async (req,res) => {
     try {
-        await axios.request("https://header.safaricombeats.co.ke/", {
+        await axios.request("http://header.safaricombeats.co.ke/", {
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false,
                 // requestCert: false,
