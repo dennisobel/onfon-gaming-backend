@@ -1,7 +1,8 @@
 import soap from "../mongodb/models/soapEnvelopeSchema.js";
 
 export const SE = async (req, res) => {
-  console.log("inside game save:",req.body);
+  // console.log("IP:",req.ip)
+  // console.log("inside game save:",req.body);
   try {
     const newSE = new soap(req.body);
     await newSE.save();

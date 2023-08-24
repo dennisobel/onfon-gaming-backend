@@ -10,7 +10,8 @@ const soapEnvelopeSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    value: String
+    value: String,
+    ip: String,
 });
 
 const soap = mongoose.model("soapEnvelope", soapEnvelopeSchema);
