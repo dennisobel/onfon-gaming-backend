@@ -8,6 +8,7 @@ import morgan from "morgan";
 import connectDB from "./mongodb/connect.js";
 import userRouter from "./routes/user.routes.js";
 import gameRouter from "./routes/game.routes.js";
+import headlessRouter from "./routes/headless.routes.js";	
 import SE from "./routes/soap.routes.js";
 
 import * as fs from "fs";
@@ -49,6 +50,7 @@ app.get("/", (req, res) => {
 app.use("/users", userRouter);
 app.use("/games", gameRouter);
 app.use("/game_play",SE)
+app.use("/headless", headlessRouter);
 
 // Catch-all route for serving individual projects
 // let projectName
