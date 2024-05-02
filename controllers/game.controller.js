@@ -36,7 +36,20 @@ const createGame = async (req, res) => {
         if (err) {
           res.status(500).json({ msg: err.message });
         } else {
-          const { backdrop_path, homepage, poster_path, title, tagline, overview } = req.body;
+          const {
+            backdrop_path,
+            homepage,
+            poster_path,
+            title,
+            tagline,
+            overview,
+            name,
+            category,
+            banner,
+            description,
+            demo,
+            play
+          } = req.body;
 
           const photoUrls = await Promise.all([
             cloudinary.uploader.upload(req.files.backdrop_path[0].path),
@@ -48,6 +61,14 @@ const createGame = async (req, res) => {
             homepage,
             poster_path: photoUrls[1].url,
             title,
+            tagline,
+            overview,
+            name,
+            category,
+            banner,
+            description,
+            demo,
+            play
           });
 
           await newGame.save();
@@ -65,6 +86,28 @@ const createGame = async (req, res) => {
 
 // Controller for retrieving all games
 const getAllGames = async (req, res) => {
+  try {
+    const games = await Game.find();
+    res.status(200).json({
+      name:games.title,
+      category:games.category,
+      banner:games.backdrop_path,
+      description:games.overview,
+      demo:games.demo,
+      play:games.play,
+      tagline:games.tagline,
+      title:games.title,
+      homepage:games.homepage,
+      overview:games.overview,
+      backdrop_path:games.backdrop_path,
+      poster_path:games.poster_path
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getGames = async (req, res) => {
   try {
     const games = await Game.find();
     res.status(200).json(games);
@@ -94,24 +137,7 @@ const updateGame = async (req, res) => {
   console.log("INSIDE UPDATE");
   console.log(req.params);
   console.log(req.body);
-  /*
-  try {
-    const gameId = req.params.id;
-    const gameData = req.body;
 
-    const updatedGame = await Game.findByIdAndUpdate(gameId, gameData, {
-      new: true,
-    });
-
-    if (updatedGame) {
-      res.status(200).json(updatedGame);
-    } else {
-      res.status(404).json({ message: "Game not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-  */
   try {
     upload.fields([{ name: "poster_path" }, { name: "backdrop_path" }])(
       req,
@@ -122,11 +148,6 @@ const updateGame = async (req, res) => {
         } else {
           const gameId = req.params.id;
           const gameData = req.body;
-
-          // const photoUrls = await Promise.all([
-          //   cloudinary.uploader.upload(req?.files?.backdrop_path[0]?.path),
-          //   cloudinary.uploader.upload(req?.files?.poster_path[0]?.path),
-          // ]);
 
           // Check if the backdrop_path and poster_path files exist in req.files
           let backdropUrl, posterUrl;
@@ -148,10 +169,13 @@ const updateGame = async (req, res) => {
             poster_path: posterUrl?.url || gameData.poster_path,
           };
 
-
-          const updatedGame = await Game.findByIdAndUpdate(gameId, updatedGameFields, {
-            new: true,
-          });
+          const updatedGame = await Game.findByIdAndUpdate(
+            gameId,
+            updatedGameFields,
+            {
+              new: true,
+            }
+          );
 
           if (updatedGame) {
             res.status(200).json(updatedGame);
@@ -182,27 +206,5 @@ const deleteGame = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// Controller for fetching a specific game's HTML, CSS, and JS files
-// const fetchGame = (req, res) => {
-//   try {
-//     const gameId = req.params.id;
-//     const currentDir = new URL('.', import.meta.url).pathname;
-//     const gamesDir = path.join(currentDir, "../games");
-//     const gameFolderPath = path.join(gamesDir, gameId);
-//     const indexPath = path.join(gameFolderPath, "index.html");
-//     console.log("PATH:",indexPath)
-//     fs.readFile(indexPath, "utf8", (err, data) => {
-//       if (err) {
-//         res.status(404).json({ message: "Game not found", error:err });
-//       } else {
-//         res.setHeader("Content-Type", "text/html");
-//         res.end(data);
-//       }
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 export { createGame, getAllGames, getGameById, updateGame, deleteGame };

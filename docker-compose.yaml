@@ -1,13 +1,19 @@
-version: "3"
-
+version: "3.8"
 services:
-
-  gaming-backend:
+  epicgames_server:
     build:
-      context: ./onfon-gaming-backend
-      dockerfile: Dockerfile
-    restart: always
+      context: .
+      dockerfile: Dockerfile  # Adjust the Dockerfile name if needed
+    env_file:
+      - .env
+    container_name: epicgames_server
     ports:
       - "8080:8080"
-    env_file:
-      - ./.env
+    tty: true
+    restart: "no"
+    networks:
+      - epicgames_server_network
+
+networks:
+  epicgames_server_network:
+    driver: bridge

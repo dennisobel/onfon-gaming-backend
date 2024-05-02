@@ -1,11 +1,18 @@
- FROM node:lts-alpine
+FROM node:18-alpine
 
- WORKDIR /app
+#working directory
+WORKDIR /app
 
- COPY package*.json /app/
+#Copy Package Json Files
+COPY package*.json ./
 
- RUN npm install
+# Install application dependencies
+RUN npm install
 
- COPY . .
+# Copy source files
+COPY . .
 
- ENTRYPOINT ["npm", "run", "start"]
+EXPOSE 8080
+
+#Start the application
+CMD ["node", "index.js"]
